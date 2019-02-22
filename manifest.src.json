@@ -1,0 +1,37 @@
+{
+  "description": "Dodatki do Librusa.",
+  "manifest_version": 2,
+  "name": "Dodatki do Librusa",
+  "version": "1.1.1",
+  "homepage_url": "https://kubaskowy.ovh",
+
+  "applications": {
+    "gecko": {
+      "id": "{4c2509f7-c738-487c-9317-d4ef6cd1d1d8}"
+    }
+  },
+
+  "icons": {
+    "48": "assets/logo-48.jpg"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://synergia.librus.pl/zrealizowane_lekcje"],
+      "js": ["lda-lessons.js"]
+    }
+  ],
+
+  "permissions": [
+    "*://*.librus.pl/*",
+    "activeTab",
+    "tabs",
+    "webRequest",
+    "storage"
+  ],
+
+  "options_ui": {
+    "page": "options.html",
+    "browser_style": true
+  }
+}

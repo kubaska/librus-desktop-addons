@@ -1,0 +1,24 @@
+{
+  "name": "librus-desktop-addons",
+  "version": "1.1.1",
+  "description": "Dodatki do Librusa",
+  "scripts": {
+    "build": "webpack",
+    "prepack": "web-ext build --overwrite-dest",
+    "lint": "web-ext lint",
+    "start": "webpack -w",
+    "make": "webpack --mode=production --devtool=false && web-ext build --overwrite-dest"
+  },
+  "author": "kubaska",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "copy-webpack-plugin": "^5.0.0",
+    "web-ext-webpack-plugin": "github:hiikezoe/web-ext-webpack-plugin",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
+  },
+  "webExt": {
+    "sourceDir": "dist"
+  }
+}
