@@ -1,6 +1,6 @@
 {
   "name": "librus-desktop-addons",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Dodatki do Librusa",
   "scripts": {
     "build": "webpack",
