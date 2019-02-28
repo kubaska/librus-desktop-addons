@@ -11,6 +11,7 @@ module.exports = {
     }),
     new CopyPlugin([
       { from: 'assets', to: 'assets' },
+      { from: 'html/options.src.html', to: 'options.html' },
       { from: 'manifest.src.json', to: 'manifest.json' }
     ])
   ],
