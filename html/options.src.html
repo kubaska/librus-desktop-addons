@@ -16,11 +16,12 @@
 
   <body>
     <form>
-        <h3>Ustawienia</h3>
+        <h3>Obecności</h3>
+        <hr/>
         <h4>Data końca I semestru</h4>
         <span>Ustaw datę końca I semestru, aby wyświetlić procentową obecność dla poszczególnych semestrów.</span><br/>
         <span class="small">Psst..! Może być to też obojętnie który dzień ferii!</span>
-        <br/><br/>
+        <br/>
 
         <select id="lda-holiday-day">
             <option value="01">1</option>
@@ -61,6 +62,10 @@
             <option value="01">Styczeń</option>
             <option value="02">Luty</option>
         </select>
+        <br/><br/>
+
+        <input type="checkbox" name="lda-count-zw" id="lda-count-zw">
+        <label for="lda-count-zw">Licz zwolnienia (zw) jako obecności</label>
     </form>
     <script src="lda-options.js"></script>
   </body>

@@ -35,7 +35,10 @@ let pages = 0;
 let query = `data1=${schoolYear}-09-01&data2=${schoolYear+1}-07-01&filtruj_id_przedmiotu=-1&page=`;
 let promises = [];
 let subjects = {};
+
+// Options
 let holidayDate = null;
+let countZw = false;
 
 // Methods
 function getLessons(page) {
@@ -61,7 +64,6 @@ function getLessons(page) {
 
 					let semester = holidayDate > subjectDate ? 's1' : 's2';
 
-					//
 					if (subjectName && subjectState) {
 						addSubject(subjectName, subjectState, semester);
 					}
@@ -112,9 +114,7 @@ function getSchoolYear() {
 function calculatePercent() {
 	for (let subject in subjects) {
 		['s1', 's2', 'yr'].forEach(semester => {
-			let pr = parseFloat(
-				(subjects[subject][semester].ob + subjects[subject][semester].sp + subjects[subject][semester].zw) * 100 / subjects[subject][semester].total
-			);
+			let pr = parseFloat(getTotalOb(subjects[subject][semester]) * 100 / subjects[subject][semester].total);
 
 			if (!isNaN(pr))
 				subjects[subject][semester].percent = pr.toFixed(2);
@@ -147,6 +147,22 @@ function addSubject(name, value, semester) {
 	subjects[name][semester][value]++;
 }
 
+function getTotalNb(semester) {
+	return countZw
+		? semester.nb + semester.u
+		: semester.nb + semester.u + semester.zw
+}
+
+function getTotalOb(semester) {
+	return countZw
+		? semester.ob + semester.sp + semester.zw
+		: semester.ob + semester.sp
+}
+
+function getTotalAttendance(semester) {
+	return { ob: getTotalOb(semester), nb: getTotalNb(semester) };
+}
+
 /**
  * Load all pages simultaneously and display data.
  */
@@ -177,28 +193,6 @@ function loadAndDisplay() {
 }
 
 /**
- * Apply styles to subject name.
- *
- * @param semester
- * @returns {string}
- */
-function generateSubjectCol(semester) {
-	if(semester.total === 0) {
-		return `<strong>-</strong>`;
-	} else {
-		let pr = parseFloat(semester.percent);
-		let color = '';
-
-		if(pr <= 50)
-			color = 'style="color: red"';
-		else if (pr <= 60)
-			color = 'style="color: rgb(234,112,0)"';
-
-		return `<strong ${color}>${semester.percent}%</strong>`;
-	}
-}
-
-/**
  * Create table row with subject data.
  *
  * @param subjectName
@@ -207,19 +201,45 @@ function generateSubjectCol(semester) {
  */
 function createTableRow(subjectName, subject) {
 	let el = document.createElement('tr');
-    let str = `<td>${subjectName}</td>`;
+	let str = `<td>${subjectName}</td>`;
 
 	['s1', 's2', 'yr'].forEach(semester => {
-		str += `<td class="center">
-					${generateSubjectCol(subject[semester])}&nbsp;
-					(${subject[semester].ob} / ${subject[semester].sp} / ${subject[semester].nb} / ${subject[semester].u} / ${subject[semester].zw})
-				</td>`;
+		let semPercent = parseFloat(subject[semester].percent);
+		str += '<td class="center">';
+
+		// Do not count attendance, if there are no hours.
+		if(subject[semester].total === 0) {
+			str += '<strong>-</strong>';
+		}
+		else {
+			let color = '';
+			if(semPercent <= 50)
+				color = 'color: red';
+			else if (semPercent <= 60)
+				color = 'color: rgb(234,112,0)';
+
+			str += `<strong style="${color}">${subject[semester].percent}%</strong>`;
+		}
+
+		str += '&nbsp;';
+
+		str += `(${subject[semester].ob} / ${subject[semester].sp} / ${subject[semester].nb} / ${subject[semester].u} / ${subject[semester].zw})`;
+
+		// If attendance is below 50% and there are any hours in semester, show min. required hours to get to 50%.
+		if (semPercent < 50 && subject[semester].total !== 0) {
+			str += '&nbsp;';
+			str += `<span title="potrzebna ilość ob do 50%" style="color: red">
+						(${getTotalNb(subject[semester]) - getTotalOb(subject[semester])})
+					</span>`;
+		}
+
+		str += '</td>';
     });
 
 	// noinspection JSValidateTypes
 	el.className = classGenerator.next().value;
-    el.innerHTML = str;
-	
+	el.innerHTML = str;
+
 	return el;
 }
 
@@ -250,14 +270,15 @@ function loadModule() {
 /**
  * Fetch ext. options and load module.
  */
-browser.storage.sync.get(['holidayDay', 'holidayMonth']).then(data => {
-	if(data && data.holidayDay && data.holidayMonth) {
-		let holidayYear = parseInt(data.holidayMonth) > 8 ? schoolYear : (schoolYear + 1);
+browser.storage.sync.get({
+	holidayDay: '01',
+	holidayMonth: '01',
+	countZw: false
+}).then(data => {
+	let holidayYear = parseInt(data.holidayMonth) > 8 ? schoolYear : (schoolYear + 1);
+	holidayDate = Date.parse(`${holidayYear}-${data.holidayMonth}-${data.holidayDay}`);
 
-		holidayDate = Date.parse(`${holidayYear}-${data.holidayMonth}-${data.holidayDay}`);
-	} else {
-		holidayDate = Date.parse(`${schoolYear+1}-01-01`);
-	}
+	countZw = data.countZw;
 
 	loadModule();
 });
