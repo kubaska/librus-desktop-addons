@@ -2,7 +2,7 @@
   "description": "Dodatki do Librusa.",
   "manifest_version": 2,
   "name": "Dodatki do Librusa",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "homepage_url": "https://kubaskowy.ovh",
 
   "applications": {
