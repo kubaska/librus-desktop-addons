@@ -58,14 +58,13 @@ function getLessons(page) {
 				}
 
 				content.querySelectorAll('table[class="decorated"] > tbody > tr').forEach(el => {
-					let subjectDate = Date.parse(el.querySelector('td:nth-child(1)').textContent);
-					let subjectName = el.querySelector('td:nth-child(4) > b').textContent;
-					let subjectState = el.querySelector('td:nth-child(6) > p > a').textContent;
+					let subjectDate = el.querySelector('td:nth-child(1)');
+					let subjectName = el.querySelector('td:nth-child(4) > b');
+					let subjectState = el.querySelector('td:nth-child(6) > p > a');
 
-					let semester = holidayDate > subjectDate ? 's1' : 's2';
-
-					if (subjectName && subjectState) {
-						addSubject(subjectName, subjectState, semester);
+					if (subjectName && subjectState && subjectDate) {
+						let semester = holidayDate > Date.parse(subjectDate.textContent) ? 's1' : 's2';
+						addSubject(subjectName.textContent, subjectState.textContent, semester);
 					}
 				});
 
