@@ -24,7 +24,7 @@
         </span><br/>
         <br/>
 
-        <select id="lda-holiday-day">
+        <select id="lda-holiday-day" data-internal="attendance.holiday.day">
             <option value="01">1</option>
             <option value="02">2</option>
             <option value="03">3</option>
@@ -58,14 +58,14 @@
             <option value="31">31</option>
         </select>
 
-        <select id="lda-holiday-month">
+        <select id="lda-holiday-month" data-internal="attendance.holiday.month">
             <option value="12">Grudzień</option>
             <option value="01">Styczeń</option>
             <option value="02">Luty</option>
         </select>
         <br/><br/>
 
-        <input type="checkbox" name="lda-count-zw" id="lda-count-zw">
+        <input type="checkbox" id="lda-count-zw" data-internal="attendance.countZw">
         <label for="lda-count-zw">Licz zwolnienia (zw) jako obecności</label>
     </form>
     <script src="lda-options.js"></script>

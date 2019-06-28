@@ -1,0 +1,51 @@
+.lda__overlay-container {
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0,0,0,0.3);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: fixed;
+    z-index: 1000;
+
+    display: none;
+}
+
+.lda__overlay-logo {
+    background: url('https://synergia.librus.pl/images/newLayout/preloader/logo.png') no-repeat center center;
+    height: 200px;
+    width: 100%;
+}
+
+.lda__overlay-progress-bar-container {
+    width: 80%;
+    margin-top: 20px;
+}
+
+.lda__overlay-progress-bar {
+    height: 1.25rem;
+    font-size: .75rem;
+    overflow: hidden;
+    width: 100%;
+    background-color: #e9ecef;
+    text-align: center;
+    position: relative;
+    border-radius: .25rem;
+    box-shadow: 0 0 1px 1px rgba(0,0,0,0.25);
+}
+
+.lda__overlay-bar {
+    background-color: #007bff;
+    height: inherit;
+    width: 0.1%;
+    position: absolute;
+}
+
+.lda__overlay-counter {
+    position: absolute;
+    right: 0;
+    left: 0;
+    font-size: 1rem;
+    font-weight: 900;
+}

@@ -2,17 +2,20 @@
   "description": "Dodatki do Librusa.",
   "manifest_version": 2,
   "name": "Dodatki do Librusa",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "homepage_url": "https://kubaskowy.ovh",
 
+  /*#if firefox*/
   "applications": {
     "gecko": {
       "id": "{4c2509f7-c738-487c-9317-d4ef6cd1d1d8}"
     }
   },
+  /*#endif*/
 
   "icons": {
-    "48": "assets/logo-48.jpg"
+    "48": "assets/icon-48.png",
+    "96": "assets/icon-96.png"
   },
 
   "content_scripts": [
@@ -25,13 +28,14 @@
   "permissions": [
     "*://*.librus.pl/*",
     "activeTab",
-    "tabs",
     "webRequest",
     "storage"
   ],
 
   "options_ui": {
-    "page": "options.html",
-    "browser_style": true
+    /*#if firefox*/
+    "browser_style": true,
+    /*#endif*/
+    "page": "options.html"
   }
 }

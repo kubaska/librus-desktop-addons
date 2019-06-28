@@ -1,25 +1,35 @@
 {
   "name": "librus-desktop-addons",
-  "version": "1.2.1",
   "description": "Dodatki do Librusa",
   "scripts": {
     "build": "webpack",
     "prepack": "web-ext build --overwrite-dest",
     "lint": "web-ext lint",
     "start": "webpack -w",
-    "make": "webpack --mode=production --devtool=false && web-ext build --overwrite-dest"
+    "make": "npm run make:ff",
+    "make:ff": "webpack --mode=production --devtool=false --dist=firefox && web-ext build --overwrite-dest",
+    "make:chrome": "webpack --mode=production --devtool=false --dist=chrome",
+    "make:all": "npm run make:ff && npm run make:chrome"
   },
   "author": "kubaska",
   "license": "MIT",
   "private": true,
   "dependencies": {},
   "devDependencies": {
-    "copy-webpack-plugin": "^5.0.0",
+    "copy-webpack-plugin": "^5.0.3",
+    "css-loader": "^3.0.0",
+    "file-loader": "^4.0.0",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.5.2",
     "web-ext-webpack-plugin": "github:hiikezoe/web-ext-webpack-plugin",
-    "webpack": "^4.29.0",
-    "webpack-cli": "^3.2.1"
+    "webextension-polyfill": "^0.4.0",
+    "webextension-polyfill-ts": "^0.9.1",
+    "webpack": "^4.35.0",
+    "webpack-cli": "^3.3.5",
+    "webpack-preprocessor": "^0.1.12"
   },
   "webExt": {
-    "sourceDir": "dist"
+    "sourceDir": "dist-firefox"
   }
 }
