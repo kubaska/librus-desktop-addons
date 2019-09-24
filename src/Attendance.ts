@@ -2,7 +2,7 @@ import Overlay from './Utils/Overlay';
 import TableClassGenerator from "./Utils/TableClassGenerator";
 import Config from "./Utils/Config";
 import {ESettings} from "./Utils/ConfigDefaults";
-import {insertAfter} from './Utils/Util';
+import Util from './Utils/Util';
 import {isFirefox} from "./Utils/Browser";
 
 enum LessonType {
@@ -83,10 +83,12 @@ class Attendance {
                     this.pages = Math.ceil(this.lessons / 15);
                 }
 
+                const tableNo = Util.findInTable(document.querySelectorAll('table[class="decorated"] > thead > tr > td'), ['Data', 'Zajęcie Edukacyjne', 'Frekwencja']);
+
                 content.querySelectorAll('table[class="decorated"] > tbody > tr').forEach(el => {
-                    let subjectDate = el.querySelector('td:nth-child(1)');
-                    let subjectName = el.querySelector('td:nth-child(4) > b');
-                    let subjectState = el.querySelector('td:nth-child(6) > p > a');
+                    let subjectDate = el.querySelector(`td:nth-child(${tableNo[0] || 1})`);
+                    let subjectName = el.querySelector(`td:nth-child(${tableNo[1] || 4}) > b`);
+                    let subjectState = el.querySelector(`td:nth-child(${tableNo[2] || 6}) > p > a`);
 
                     if (subjectDate && subjectName && subjectState) {
                         let semester = this.winterHolidaysDate > Date.parse(subjectDate.textContent) ? SemesterType.s1 : SemesterType.s2;
@@ -94,6 +96,7 @@ class Attendance {
                         this.addLesson(subjectName.textContent, (<any>LessonType)[subjectState.textContent], semester);
                     }
                 });
+
                 resolve(request);
             }
         };
@@ -139,7 +142,7 @@ class Attendance {
             let containerElem = document.createElement('div');
             containerElem.id = 'lda-container';
             containerElem.className = 'container';
-            insertAfter(containerElem, document.querySelector('table.filters'));
+            Util.insertAfter(containerElem, document.querySelector('table.filters'));
             container = containerElem;
         } else {
             container = document.getElementById('lda-container');
