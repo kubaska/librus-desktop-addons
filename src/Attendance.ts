@@ -376,7 +376,14 @@ class Attendance {
 
         const year = monthInt > 8 ? this.currentSchoolYear : (this.currentSchoolYear + 1);
 
-        return Date.parse(`${year}-${month}-${day}`);
+        let date = Date.parse(`${year}-${month}-${day}`);
+
+        if (isNaN(date)) {
+            console.error('[LDA] Invalid winter holidays date.');
+            return Date.parse(`${this.currentSchoolYear+1}-01-01`);
+        } else {
+            return date;
+        }
     }
 }
 
