@@ -11,6 +11,7 @@ const commonConfig = {
     },
 
     entry: {
+        'lda-grades': './src/Grades.ts',
         'lda-lessons': './src/Attendance.ts',
         'lda-options': './src/Options.ts'
     },

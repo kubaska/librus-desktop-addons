@@ -2,7 +2,7 @@
   "description": "Dodatki do Librusa.",
   "manifest_version": 2,
   "name": "Dodatki do Librusa",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "homepage_url": "https://kubaskowy.ovh",
 
   /*#if firefox*/
@@ -22,6 +22,10 @@
     {
       "matches": ["https://synergia.librus.pl/zrealizowane_lekcje"],
       "js": ["lda-lessons.js"]
+    },
+    {
+      "matches": ["https://synergia.librus.pl/przegladaj_oceny/uczen"],
+      "js": ["lda-grades.js"]
     }
   ],
 

@@ -83,7 +83,10 @@ class Attendance {
                     this.pages = Math.ceil(this.lessons / 15);
                 }
 
-                const tableNo = Util.findInTable(document.querySelectorAll('table[class="decorated"] > thead > tr > td'), ['Data', 'Zajęcie Edukacyjne', 'Frekwencja']);
+                const tableNo = Util.findInTable(
+                    document.querySelectorAll('table[class="decorated"] > thead > tr > td'),
+                    ['Data', 'Zajęcie Edukacyjne', 'Frekwencja']
+                );
 
                 content.querySelectorAll('table[class="decorated"] > tbody > tr').forEach(el => {
                     let subjectDate = el.querySelector(`td:nth-child(${tableNo[0] || 1})`);
@@ -318,6 +321,7 @@ class Attendance {
      */
     public getSubjectTotalPercent = (subjectName: string, semester: SemesterType): number => {
         if (semester === SemesterType.BOTH) {
+            // todo Math.round zamiast Number?
             return Number((this.getTotalOb(subjectName, SemesterType.BOTH) * 100 / this.getTotal(subjectName, SemesterType.BOTH)).toFixed(2));
         }
         else return Number((this.getTotalOb(subjectName, semester) * 100 / this.getTotal(subjectName, semester)).toFixed(2));

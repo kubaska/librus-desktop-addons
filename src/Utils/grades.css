@@ -1,0 +1,59 @@
+.lda__cell-bold {
+    border-width: 0 2px !important;
+    border-color: black !important;
+    border-style: solid !important;
+}
+.lda__cell-bold-top {
+    border-top: 2px solid black !important;
+}
+.lda__cell-bold-bottom {
+    border-bottom: 2px solid black !important;
+}
+
+
+.lda__sem-col {
+    width: 100%;
+    display: flex !important;
+    flex-flow: column;
+}
+.lda__sem-col > div {
+    display: flex !important;
+    justify-content: space-evenly;
+}
+.lda__sem-col > div > span:first-child {
+    width: 35%;
+}
+.lda__sem-col > div > span:last-child {
+    width: 65%;
+}
+
+
+.lda__grade-edited {
+    border: 1px black solid;
+}
+.lda__grade-add {
+    background-color: #a0c92c;
+    border: 1px #7b9922 solid;
+    color: white;
+    border-radius: 99px;
+    cursor: pointer;
+    height: 16px;
+    line-height: 16px;
+    display: inline-block;
+    text-align: center;
+    margin-left: 3px;
+    width: 16px;
+    font-weight: 800;
+}
+/* If there are no grades in row, we want to push icon even further. */
+.lda__grade-add:only-child {
+    margin-left: 7px !important;
+}
+.lda__grade-custom {
+    border: 1px black solid;
+    background-color: black;
+    cursor: pointer;
+}
+.lda__grade-custom > a {
+    color: white !important;
+}
