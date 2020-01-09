@@ -11,4 +11,4 @@ Dostępne dla [Firefoxa](https://addons.mozilla.org/firefox/addon/librus-desktop
 
 ---
 
-Built using npm 6.9.0 and node 8.9.1
+Built using npm 6.13.4 and node 12.14.1
