@@ -2,7 +2,7 @@
   "name": "Dodatki do Librusa",
   "description": "Rozszerzenie wprowadzające funkcjonalności, których brakuje w dzienniku Librus.",
   "manifest_version": 2,
-  "version": "1.4.0",
+  "version": "1.4.1",
   "homepage_url": "https://kubaskowy.ovh",
 
   /*#if firefox*/
