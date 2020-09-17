@@ -33,13 +33,15 @@ const firefoxConfig = {
     plugins: [
         new WebExtWebpackPlugin({
             browserConsole: true,
-            startUrl: ['https://portal.librus.pl/rodzina'],
+            startUrl: ['https://portal.librus.pl/rodzina/synergia/loguj'],
             sourceDir: path.resolve(__dirname, 'dist-firefox')
         }),
-        new CopyPlugin([
-            { from: 'assets', to: 'assets' },
-            { from: 'html/options.src.html', to: 'options.html' }
-        ])
+        new CopyPlugin({
+            patterns: [
+                { from: 'assets', to: 'assets' },
+                { from: 'html/options.src.html', to: 'options.html' }
+            ]
+        })
     ],
 
     module: {
@@ -62,10 +64,12 @@ const firefoxConfig = {
 
 const chromeConfig = {
     plugins: [
-        new CopyPlugin([
-            { from: 'assets', to: 'assets' },
-            { from: 'html/options.src.html', to: 'options.html' }
-        ])
+        new CopyPlugin({
+            patterns: [
+                { from: 'assets', to: 'assets' },
+                { from: 'html/options.src.html', to: 'options.html' }
+            ]
+        })
     ],
 
     module: {
