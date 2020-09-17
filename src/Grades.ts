@@ -32,8 +32,6 @@ class Grades {
     private debugMode = false;
 
     constructor() {
-        // todo uzycie MutationObserver, aby modyfikowac wyskakujace popupy
-
         this.config.load().then(() => {
             if (!this.config.get(ESettings.GRADES_DISABLED)) {
                 // @ts-ignore

@@ -5,7 +5,7 @@ import {ESettings} from "./Utils/ConfigDefaults";
 import Util from './Utils/Util';
 import {isFirefox} from "./Utils/Browser";
 
-enum LessonType {
+enum LessonState {
     ob = 'ob',
     sp = 'sp',
     nb = 'nb',
@@ -13,7 +13,7 @@ enum LessonType {
     zw = 'zw'
 }
 
-enum PrimaryLessonType {
+enum PrimaryLessonState {
     OB, NB
 }
 
@@ -79,7 +79,7 @@ class Attendance {
                 // Scrap page count from first page.
                 if (page === 1) {
                     let pagination = content.querySelector('.pagination');
-                    
+
                     if (pagination) {
                         this.pages = Math.ceil(parseInt(pagination.textContent.split(' ').splice(-1)[0]) / 15);
                     } else {
@@ -100,7 +100,7 @@ class Attendance {
                     if (subjectDate && subjectName && subjectState) {
                         let semester = this.winterHolidaysDate > Date.parse(subjectDate.textContent) ? SemesterType.s1 : SemesterType.s2;
 
-                        this.addLesson(subjectName.textContent, (<any>LessonType)[subjectState.textContent], semester);
+                        this.addLesson(subjectName.textContent, this.parseLessonState(subjectState.textContent), semester);
                     }
                 });
 
@@ -220,13 +220,31 @@ class Attendance {
     };
 
     /**
+     * Parses lesson state to enum
+     *
+     * @param state
+     */
+    private parseLessonState(state: string) {
+        switch (state.toLowerCase()) {
+            case 'ob': return LessonState.ob;
+            case 'sp': return LessonState.sp;
+            case 'nb': return LessonState.nb;
+            case 'u':  return LessonState.u;
+            case 'zw': return LessonState.zw;
+            case 'ok': return LessonState.zw; // zwolniony - uczestnictwo w konkursie
+            case 'ws': return LessonState.zw; // zwolniony - uczestnictwo w wycieczce
+            case 'uc': return LessonState.nb; // ucieczka z lekcji
+        }
+    }
+
+    /**
      * Add subject to dataset.
      *
-     * @param {string}          lessonName  Subject name.
-     * @param {LessonType}      type        Subject state.  'ob', 'sp', 'nb', 'u', 'zw'
-     * @param {SemesterType}    semester    Semester.       's1', 's2'
+     * @param {string}         lessonName  Subject name.
+     * @param {LessonState}    state       Subject state.
+     * @param {SemesterType}   semester    Semester.
      */
-    private addLesson = (lessonName: string, type: LessonType, semester: SemesterType): void => {
+    private addLesson = (lessonName: string, state: LessonState, semester: SemesterType): void => {
         if (!this.data[lessonName]) {
             this.data[lessonName] = {
                 [SemesterType.s1]: {ob: 0, sp: 0, nb: 0, u: 0, zw: 0},
@@ -234,25 +252,25 @@ class Attendance {
             }
         }
 
-        this.data[lessonName][semester][type]++;
+        this.data[lessonName][semester][state]++;
     };
 
     /**
      *
      *
-     * @param {PrimaryLessonType} type
+     * @param {PrimaryLessonState} type
      */
-    private getLessonTypes = (type: PrimaryLessonType) => {
+    private getLessonTypes = (type: PrimaryLessonState) => {
         const countZw = this.config.get(ESettings.ATTENDANCE_COUNT_ZW_AS_OB);
 
-        if (type === PrimaryLessonType.OB) {
+        if (type === PrimaryLessonState.OB) {
             return countZw
-                ? [LessonType.ob, LessonType.sp, LessonType.zw]
-                : [LessonType.ob, LessonType.sp];
+                ? [LessonState.ob, LessonState.sp, LessonState.zw]
+                : [LessonState.ob, LessonState.sp];
         } else {
             return countZw
-                ? [LessonType.u, LessonType.nb]
-                : [LessonType.u, LessonType.nb, LessonType.zw];
+                ? [LessonState.u, LessonState.nb]
+                : [LessonState.u, LessonState.nb, LessonState.zw];
         }
     };
 
@@ -263,7 +281,7 @@ class Attendance {
      * @param semester     e.g SemesterType.s1
      */
     public getTotalOb = (subjectName: string, semester: SemesterType): number => {
-        return this.getTotalPrimaryAttendance(subjectName, semester, PrimaryLessonType.OB);
+        return this.getTotalPrimaryAttendance(subjectName, semester, PrimaryLessonState.OB);
     };
 
     /**
@@ -273,7 +291,7 @@ class Attendance {
      * @param semester     e.g SemesterType.s1
      */
     public getTotalNb = (subjectName: string, semester: SemesterType): number => {
-        return this.getTotalPrimaryAttendance(subjectName, semester, PrimaryLessonType.NB);
+        return this.getTotalPrimaryAttendance(subjectName, semester, PrimaryLessonState.NB);
     };
 
     /**
@@ -283,7 +301,7 @@ class Attendance {
      * @param semester     e.g SemesterType.s1
      * @param lessonType   e.g PrimaryLessonType.OB
      */
-    private getTotalPrimaryAttendance = (subjectName: string, semester: SemesterType, lessonType: PrimaryLessonType): number => {
+    private getTotalPrimaryAttendance = (subjectName: string, semester: SemesterType, lessonType: PrimaryLessonState): number => {
         if (semester === SemesterType.BOTH) {
             return [SemesterType.s1, SemesterType.s2]
                 .map(semester => {
@@ -342,7 +360,7 @@ class Attendance {
             let res: LessonSet = {ob: 0, sp: 0, nb: 0, u: 0, zw: 0};
 
             [SemesterType.s1, SemesterType.s2].forEach(semester => {
-                Object.values(LessonType).forEach(lessonType => {
+                Object.values(LessonState).forEach(lessonType => {
                     res[lessonType] += this.data[subjectName][semester][lessonType];
                 })
             });
