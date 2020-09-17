@@ -34,7 +34,6 @@ interface LessonSet {
 
 class Attendance {
     private data: { [key: string]: Semesters } = {};
-    private lessons: number;
     private pages: number;
     private currentSchoolYear = this.getSchoolYear();
     private winterHolidaysDate: Number;
@@ -79,8 +78,13 @@ class Attendance {
                 let content = (new DOMParser).parseFromString(request.response, "text/html");
                 // Scrap page count from first page.
                 if (page === 1) {
-                    this.lessons = parseInt(content.querySelector('.pagination').textContent.split(' ').splice(-1)[0]);
-                    this.pages = Math.ceil(this.lessons / 15);
+                    let pagination = content.querySelector('.pagination');
+                    
+                    if (pagination) {
+                        this.pages = Math.ceil(parseInt(pagination.textContent.split(' ').splice(-1)[0]) / 15);
+                    } else {
+                        this.pages = 1;
+                    }
                 }
 
                 const tableNo = Util.findInTable(
