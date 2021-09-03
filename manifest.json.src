@@ -31,7 +31,6 @@
 
   "permissions": [
     "*://*.librus.pl/*",
-    "activeTab",
     "webRequest",
     "storage"
   ],
