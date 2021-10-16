@@ -1,35 +1,34 @@
 {
-  "name": "librus-desktop-addons",
-  "description": "Dodatki do Librusa",
-  "scripts": {
-    "build": "webpack",
-    "prepack": "web-ext build --overwrite-dest",
-    "lint": "web-ext lint",
-    "start": "webpack -w",
-    "make": "npm run make:ff",
-    "make:ff": "webpack --mode=production --devtool=false --dist=firefox && web-ext build --overwrite-dest",
-    "make:chrome": "webpack --mode=production --devtool=false --dist=chrome",
-    "make:all": "npm run make:ff && npm run make:chrome"
-  },
-  "author": "kubaska",
-  "license": "MIT",
-  "private": true,
-  "dependencies": {},
-  "devDependencies": {
-    "copy-webpack-plugin": "^6.1.0",
-    "css-loader": "^4.3.0",
-    "file-loader": "^6.1.0",
-    "style-loader": "^1.2.1",
-    "ts-loader": "^8.0.3",
-    "typescript": "^4.0.2",
-    "web-ext-webpack-plugin": "github:birtles/web-ext-webpack-plugin",
-    "webextension-polyfill": "^0.6.0",
-    "webextension-polyfill-ts": "^0.20.0",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12",
-    "webpack-preprocessor": "^0.1.12"
-  },
-  "webExt": {
-    "sourceDir": "dist-firefox"
-  }
+    "name": "librus-desktop-addons",
+    "description": "Dodatki do Librusa",
+    "scripts": {
+        "build": "webpack",
+        "prepack": "web-ext build --overwrite-dest",
+        "lint": "web-ext lint",
+        "start": "webpack -w",
+        "make": "npm run make:ff",
+        "make:ff": "webpack --mode=production --devtool=false --dist=firefox && web-ext build --overwrite-dest",
+        "make:chrome": "webpack --mode=production --devtool=false --dist=chrome",
+        "make:all": "npm run make:ff && npm run make:chrome"
+    },
+    "author": "kubaska",
+    "private": true,
+    "dependencies": {},
+    "devDependencies": {
+        "copy-webpack-plugin": "^6.1.0",
+        "css-loader": "^4.3.0",
+        "file-loader": "^6.1.0",
+        "style-loader": "^1.2.1",
+        "ts-loader": "^8.0.3",
+        "typescript": "^4.0.2",
+        "web-ext-webpack-plugin": "github:birtles/web-ext-webpack-plugin",
+        "webextension-polyfill": "^0.6.0",
+        "webextension-polyfill-ts": "^0.20.0",
+        "webpack": "^4.44.1",
+        "webpack-cli": "^3.3.12",
+        "webpack-preprocessor": "^0.1.12"
+    },
+    "webExt": {
+        "sourceDir": "dist-firefox"
+    }
 }
