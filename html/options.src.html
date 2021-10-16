@@ -1,160 +1,157 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
+<head>
     <meta charset="utf-8"/>
 
-      <style>
-          h3 {
-              margin: 0.5em auto;
-          }
+    <style>
+        h3 {
+            margin: 0.5em auto;
+        }
 
-          .row {
-              display: flex;
-              padding: 10px;
-          }
-          .row:hover {
-              background-color: rgba(0,0,0,.05);
-              /*background-color: rgba(0,0,0,.075);*/
-          }
-          .row > .description {
-              width: 75%;
-          }
+        .row {
+            display: flex;
+            padding: 10px;
+            justify-content: space-between;
+        }
+        .row:hover {
+            background-color: rgba(0,0,0,.05);
+            /*background-color: rgba(0,0,0,.075);*/
+        }
+        .row > .description {
+            /*width: 75%;*/
+        }
 
-          .description > p {
-              font-weight: bold;
-              margin: 4px 0;
-          }
-          .description > span {
-              font-size: 0.8em;
-              color: gray;
-              font-style: italic;
-          }
+        .description > p {
+            font-weight: bold;
+            margin: 4px 0;
+        }
+        .description > span {
+            color: black;
+            font-size: 0.85em;
+            font-style: italic;
+            font-weight: 400;
+        }
 
-          .row > .control {
-              width: 25%;
-              display: flex;
-              align-items: center;
-              justify-content: flex-end;
-              padding: 5px;
-          }
-          .control > :not(:only-child) {
-              margin-left: 5px;
-          }
-      </style>
-  </head>
+        .row > .control {
+            /*width: 25%;*/
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 5px;
+        }
+        .control > :not(:only-child) {
+            margin-left: 5px;
+        }
 
-  <body>
-    <form>
-        <h3>Obecności</h3>
-        <hr/>
+        .d-none { display: none; }
+    </style>
+</head>
 
-        <div class="row">
-            <div class="description">
-                <p>Data końca I semestru</p>
-                <span>
+<body>
+<form>
+    <h3>Obecności</h3>
+    <hr/>
+
+    <div class="row">
+        <div class="description">
+            <p>Data końca I semestru</p>
+            <span>
                     Ustaw datę końca I semestru, aby wyświetlić procentową obecność dla poszczególnych semestrów.
                     (Psst..! Może być to też obojętnie który dzień ferii!)
                 </span>
-            </div>
-
-            <div class="control">
-                <select id="lda-holiday-day" data-internal="attendance.holiday.day">
-                    <option value="01">1</option>
-                    <option value="02">2</option>
-                    <option value="03">3</option>
-                    <option value="04">4</option>
-                    <option value="05">5</option>
-                    <option value="06">6</option>
-                    <option value="07">7</option>
-                    <option value="08">8</option>
-                    <option value="09">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                    <option value="24">24</option>
-                    <option value="25">25</option>
-                    <option value="26">26</option>
-                    <option value="27">27</option>
-                    <option value="28">28</option>
-                    <option value="29">29</option>
-                    <option value="30">30</option>
-                    <option value="31">31</option>
-                </select>
-                <select id="lda-holiday-month" data-internal="attendance.holiday.month">
-                    <option value="12">Grudzień</option>
-                    <option value="01">Styczeń</option>
-                    <option value="02">Luty</option>
-                </select>
-            </div>
         </div>
 
-        <div class="row">
-            <div class="description">
-                <p>Licz zwolnienia (zw) jako obecności</p>
-                <span>
-                    Zwolnienie zostanie policzone jako obecność.
-                </span>
-            </div>
+        <div class="control">
+            <select id="lda-holiday-day" data-internal="attendance.holiday.day">
+                <option value="01">1</option>
+                <option value="02">2</option>
+                <option value="03">3</option>
+                <option value="04">4</option>
+                <option value="05">5</option>
+                <option value="06">6</option>
+                <option value="07">7</option>
+                <option value="08">8</option>
+                <option value="09">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29" data-hide>29</option>
+                <option value="30" data-hide>30</option>
+                <option value="31" data-hide>31</option>
+            </select>
+            <select id="lda-holiday-month" data-internal="attendance.holiday.month">
+                <option value="12">Grudzień</option>
+                <option value="01">Styczeń</option>
+                <option value="02">Luty</option>
+            </select>
+        </div>
+    </div>
 
-            <div class="control">
-                <input type="checkbox" id="lda-count-zw" data-internal="attendance.countZw">
-            </div>
+    <div class="row">
+        <div class="description">
+            <p>Licz zwolnienia (zw) jako obecności</p>
+            <span>Zwolnienie zostanie policzone jako obecność.</span>
         </div>
 
-        <h3>Oceny</h3>
-        <hr/>
+        <div class="control">
+            <input type="checkbox" id="lda-count-zw" data-internal="attendance.countZw">
+        </div>
+    </div>
 
-        <div class="row">
-            <div class="description">
-                <p>Wyłącz obliczanie średniej</p>
-                <span>
-                    Zaznacz, jeżeli nie potrzebujesz tej funkcjonalności.
-                </span>
-            </div>
+    <h3>Oceny</h3>
+    <hr/>
 
-            <div class="control">
-                <input type="checkbox" data-internal="grades.disabled"/>
-            </div>
+    <div class="row">
+        <div class="description">
+            <p>Wyłącz obliczanie średniej</p>
+            <span>Zaznacz, jeżeli nie potrzebujesz tej funkcjonalności.</span>
         </div>
 
-        <div class="row">
-            <div class="description">
-                <p>Wartość plusa</p>
-                <span>
-                    Wartość dodawana do oceny z plusem. (min. 0 maks. 0,75; domyślnie 0,25)
-                </span>
-            </div>
+        <div class="control">
+            <input type="checkbox" data-internal="grades.disabled"/>
+        </div>
+    </div>
 
-            <div class="control">
-                <input type="number" size="2" step="0.01" min="0" max="0.75" data-internal="grades.values.plus" required>
-            </div>
+    <div class="row">
+        <div class="description">
+            <p>Wartość plusa</p>
+            <span>Wartość dodawana do oceny z plusem. (min. 0; maks. 0,75; domyślnie 0,25)</span>
         </div>
 
-        <div class="row">
-            <div class="description">
-                <p>Wartość minusa</p>
-                <span>
-                    Wartość odejmowana od oceny z minusem. (min. 0 maks. 0,75; domyślnie 0,25)
-                </span>
-            </div>
-
-            <div class="control">
-                <input type="number" size="2" step="0.01" min="0" max="0.75" data-internal="grades.values.minus" required>
-            </div>
+        <div class="control">
+            <input type="number" step="0.01" min="0" max="0.75" data-internal="grades.values.plus" required>
         </div>
-    </form>
-    <script src="lda-options.js"></script>
-  </body>
+    </div>
+
+    <div class="row">
+        <div class="description">
+            <p>Wartość minusa</p>
+            <span>Wartość odejmowana od oceny z minusem. (min. 0; maks. 0,75; domyślnie 0,25)</span>
+        </div>
+
+        <div class="control">
+            <input type="number" step="0.01" min="0" max="0.75" data-internal="grades.values.minus" required>
+        </div>
+    </div>
+</form>
+<script src="vendor.js"></script>
+<script src="lda-options.js"></script>
+</body>
 </html>

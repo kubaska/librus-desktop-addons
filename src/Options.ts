@@ -1,4 +1,4 @@
-import '../manifest.json.src';
+import '../manifest.json5';
 
 import { ISettings, defaultSettings } from './Utils/ConfigDefaults';
 import { browser } from 'webextension-polyfill-ts';
@@ -19,16 +19,33 @@ function restoreOptions() {
                     element.checked = !!data[name];
                     break;
 
-                case InputType.INPUT_NUMBER:
-                    element.value = data[name];
-                    break;
-
                 case InputType.SELECT:
+                case InputType.INPUT_NUMBER:
                     element.value = data[name];
                     break;
             }
         }
+
+        updateMonthDays();
     });
+}
+
+function updateMonthDays() {
+    const month = <HTMLSelectElement>document.getElementById('lda-holiday-month');
+
+    switch (month.value) {
+        case "12":
+        case "01":
+            document.querySelectorAll('#lda-holiday-day option[data-hide]').forEach(el => el.classList.remove('d-none'));
+            break;
+        case "02":
+            const day = <HTMLSelectElement>document.getElementById('lda-holiday-day');
+            ['29', '30', '31'].some(invalidDay => {
+                if (day.value === invalidDay) day.value = '28';
+            });
+
+            document.querySelectorAll('#lda-holiday-day option[data-hide]').forEach(el => el.classList.add('d-none'));
+    }
 }
 
 // todo saved alert
@@ -41,6 +58,11 @@ function saveOptions() {
 function createListeners() {
     document.querySelectorAll('[data-internal]').forEach(elem => {
         elem.addEventListener('change', saveOptions);
+    });
+
+    document.getElementById('lda-holiday-month').addEventListener('change', () => {
+        updateMonthDays();
+        saveOptions();
     });
 }
 
