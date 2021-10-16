@@ -28,7 +28,7 @@ export default class Util {
         // Perform search.
         tds.forEach(td => {
             _needles.forEach((needle, i) => {
-                if (td.textContent.trim() === needle) {
+                if (td.textContent.trim().toLowerCase() === needle.toLowerCase()) {
                     result[i] = pos;
                 }
             });
