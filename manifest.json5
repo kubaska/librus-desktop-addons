@@ -3,7 +3,7 @@
     "description": "Obliczanie procentowej obecności z każdego przedmiotu, manipulacja ocenami oraz wyświetlanie średniej.",
     "manifest_version": 2,
     "version": "1.5.0",
-    "homepage_url": "https://kubaskowy.ovh",
+    "homepage_url": "https://github.com/kubaska/librus-desktop-addons",
 
     /* #!if firefox */
     "applications": {
