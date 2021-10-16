@@ -59,7 +59,7 @@ export default class GradeModal {
         <option value="6+">6+</option>
     </select>
     </div>
-    
+
     <div class="lda__row">
         <p>Waga:</p>
         <input type="number" id="lda__grade-weight" class="lda__input-number" min="1" max="99"/>
@@ -69,12 +69,12 @@ export default class GradeModal {
         <p>Licz do średniej:</p>&nbsp;
         <input type="checkbox" id="lda__grade-counted"/>
     </div>
-    
+
     <a href="#" target="_blank" id="lda__grade-info">Informacje o ocenie</a>
   </div>
   <div class="lda__grade-modal-footer">
-    <button class="lda__modal-btn lda__modal-btn-success" id="lda__grade-confirm">Zmień</button>
-    <button class="lda__modal-btn lda__modal-btn-danger" id="lda__grade-delete">Usuń</button>
+    <button class="lda__modal-btn lda__modal-btn--success" id="lda__grade-confirm">Zmień</button>
+    <button class="lda__modal-btn lda__modal-btn--danger" id="lda__grade-delete">Usuń</button>
   </div>
 </div>`;
 

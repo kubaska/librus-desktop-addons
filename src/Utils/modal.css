@@ -67,12 +67,12 @@
     font-size: 0.75rem;
 }
 
-.lda__modal-btn-success {
+.lda__modal-btn--success {
     background-color: #28a745;
     border-color: #28a745;
     color: #fff;
 }
-.lda__modal-btn-danger {
+.lda__modal-btn--danger {
     background-color: #dc3545;
     border-color: #dc3545;
     color: #fff;
