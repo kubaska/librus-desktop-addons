@@ -289,7 +289,7 @@ class Attendance {
             el.className = cssGenerator.getNext();
             el.innerHTML = str;
             table.appendChild(el);
-        }
+        });
     };
 
     /**
