@@ -44,15 +44,17 @@ export default class Overlay {
         document.body.appendChild(container);
         this.overlayHook = container;
     };
-    
+
+    private updateSteps = () => {
+        this.getBar().style.width = `${(this.stepsMade / this.totalSteps * 100).toFixed(2)}%`;
+        this.getText().textContent = `${this.stepsMade} / ${this.totalSteps}`;
+    }
+
     public setSteps = (steps: number) => {
         this.totalSteps = steps;
 
         // Overlay already exists, reconfigure.
-        if (this.stepsMade) {
-            this.getBar().style.width = `${(this.stepsMade / this.totalSteps * 100).toFixed(2)}%`;
-            this.getText().textContent = `${this.stepsMade} / ${this.totalSteps}`;
-        }
+        if (this.stepsMade) this.updateSteps();
 
         return this;
     };
@@ -67,8 +69,7 @@ export default class Overlay {
         if ((this.stepsMade + 1 === this.totalSteps) && this.autoComplete) this.finish();
 
         this.stepsMade++;
-        this.getBar().style.width = `${(this.stepsMade / this.totalSteps * 100).toFixed(2)}%`;
-        this.getText().textContent = `${this.stepsMade} / ${this.totalSteps}`;
+        this.updateSteps();
 
         return this;
     };
@@ -78,7 +79,6 @@ export default class Overlay {
      */
     public show = () => {
         this.overlayHook.style.display = 'flex';
-
         return this;
     };
 
@@ -87,7 +87,6 @@ export default class Overlay {
      */
     public hide = () => {
         this.overlayHook.style.display = 'none';
-
         return this;
     };
 
@@ -96,9 +95,8 @@ export default class Overlay {
      */
     public reset = () => {
         this.stepsMade = 0;
-        this.getBar().style.width = '0%';
-        this.getText().textContent = `0 / ${this.totalSteps}`;
         this.finished = false;
+        this.updateSteps();
 
         return this;
     };
