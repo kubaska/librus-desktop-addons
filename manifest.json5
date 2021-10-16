@@ -1,0 +1,44 @@
+{
+    "name": "Dodatki do Librusa",
+    "description": "Obliczanie procentowej obecności z każdego przedmiotu, manipulacja ocenami oraz wyświetlanie średniej.",
+    "manifest_version": 2,
+    "version": "1.5.0",
+    "homepage_url": "https://kubaskowy.ovh",
+
+    /* #!if firefox */
+    "applications": {
+        "gecko": {
+            "id": "{4c2509f7-c738-487c-9317-d4ef6cd1d1d8}"
+        }
+    },
+    /* #!endif */
+
+    "icons": {
+        "48": "assets/icon-48.png",
+        "96": "assets/icon-96.png"
+    },
+
+    "content_scripts": [
+        {
+            "matches": ["https://synergia.librus.pl/zrealizowane_lekcje"],
+            "js": ["vendor.js", "lda-lessons.js"]
+        },
+        {
+            "matches": ["https://synergia.librus.pl/przegladaj_oceny/uczen"],
+            "js": ["vendor.js", "lda-grades.js"]
+        }
+    ],
+
+    "permissions": [
+        "*://*.librus.pl/*",
+        "webRequest",
+        "storage"
+    ],
+
+    "options_ui": {
+        /* #!if firefox */
+        "browser_style": true,
+        /* #!endif */
+        "page": "options.html"
+    }
+}
