@@ -1,97 +1,93 @@
 const path = require('path');
-const WebExtWebpackPlugin = require('web-ext-webpack-plugin');
+const WebExtPlugin = require('web-ext-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
-const commonConfig = {
-    mode: 'development',
-    devtool: 'source-map',
+module.exports = (env) => {
+    const isChrome = env.dist && env.dist === 'chrome';
 
-    resolve: {
-        extensions: [ '.tsx', '.ts', '.js' ]
-    },
+    let config = {
+        mode: 'development',
+        devtool: 'source-map',
 
-    entry: {
-        'lda-grades': './src/Grades.ts',
-        'lda-lessons': './src/Attendance.ts',
-        'lda-options': './src/Options.ts'
-    },
-};
+        resolve: {
+            extensions: [ '.tsx', '.ts', '.js' ]
+        },
 
-const commonRules = [
-    {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/
-    },
-    {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
-    },
-];
+        entry: {
+            'lda-grades': './src/Grades.ts',
+            'lda-lessons': './src/Attendance.ts',
+            'lda-options': './src/Options.ts'
+        },
 
-const firefoxConfig = {
-    plugins: [
-        new WebExtWebpackPlugin({
-            browserConsole: true,
-            startUrl: ['https://portal.librus.pl/rodzina/synergia/loguj'],
-            sourceDir: path.resolve(__dirname, 'dist-firefox')
-        }),
-        new CopyPlugin({
-            patterns: [
-                { from: 'assets', to: 'assets' },
-                { from: 'html/options.src.html', to: 'options.html' }
-            ]
-        })
-    ],
-
-    module: {
-        rules: [
-            ...commonRules,
-            {
-                test: /\.json.src$/,
-                use: [
-                    { loader: 'file-loader', options: { name: '[name]' } },
-                    { loader: "webpack-preprocessor?definitions=['firefox']" }
+        plugins: [
+            new CopyPlugin({
+                patterns: [
+                    { from: 'assets', to: 'assets' },
+                    { from: 'html/options.src.html', to: 'options.html' }
                 ]
-            }
-        ]
-    },
+            })
+        ],
 
-    output: {
-        path: path.resolve(__dirname, 'dist-firefox')
-    },
-};
-
-const chromeConfig = {
-    plugins: [
-        new CopyPlugin({
-            patterns: [
-                { from: 'assets', to: 'assets' },
-                { from: 'html/options.src.html', to: 'options.html' }
+        module: {
+            rules: [
+                {
+                    test: /\.tsx?$/,
+                    use: 'ts-loader',
+                    exclude: /node_modules/
+                },
+                {
+                    test: /\.css$/,
+                    use: ['style-loader', 'css-loader'],
+                },
+                {
+                    test: /\.json5$/,
+                    type: 'asset/resource',
+                    generator: {
+                        filename: '[name].json'
+                    },
+                    use: [
+                        {
+                            loader: "webpack-preprocessor-loader",
+                            options: {
+                                params: {
+                                    firefox: !isChrome
+                                }
+                            }
+                        }
+                    ]
+                }
             ]
-        })
-    ],
+        },
 
-    module: {
-        rules: [
-            ...commonRules,
-            {
-                test: /\.json.src$/,
-                use: [
-                    { loader: 'file-loader', options: { name: '[name]' } },
-                    { loader: "webpack-preprocessor?definitions=['chrome']" },
-                ],
-            },
-        ]
-    },
-    output: {
-        path: path.resolve(__dirname, 'dist-chrome')
-    },
-};
+        output: {
+            path: path.resolve(__dirname, `dist-${isChrome ? 'chrome' : 'firefox'}`)
+        },
 
-module.exports = (env, argv) => {
-    if (argv.dist && argv.dist === 'chrome')
-        return {...commonConfig, ...chromeConfig};
-    else
-        return {...commonConfig, ...firefoxConfig};
+        node: false,
+
+        optimization: {
+            splitChunks: {
+                cacheGroups: {
+                    vendor: {
+                        name: "vendor",
+                        test: /[\\/]node_modules[\\/]/,
+                        chunks: "all",
+                    },
+                },
+            }
+        }
+    };
+
+    if (! isChrome) {
+        // add web ext plugin
+        config.plugins.push(
+            new WebExtPlugin({
+                browserConsole: true,
+                startUrl: 'https://portal.librus.pl/rodzina/synergia/loguj',
+                sourceDir: path.resolve(__dirname, 'dist-firefox')
+            })
+        );
+    }
+
+    return config;
 };
