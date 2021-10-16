@@ -49,9 +49,7 @@
 }
 
 .lda__grade-modal-footer {
-    padding: 2px 16px;
-    border-top: 1px solid #dee2e6;
-
+    padding: 0 16px 8px 16px;
     display: flex;
     justify-content: center;
 }
@@ -61,10 +59,8 @@
     border: 1px solid transparent;
     color: #363636;
     cursor: pointer;
-    text-align: center;
-    white-space: nowrap;
     padding: 0.375rem 0.75rem;
-    font-size: 0.75rem;
+    height: auto;
 }
 
 .lda__modal-btn--success {

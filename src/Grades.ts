@@ -160,7 +160,7 @@ class Grades {
     };
 
     /**
-     * Main function that renders our average for the user.
+     * Main function that renders average for the user.
      */
     private render = () => {
         // We do not want to render new column on every hot reload in development, so we just exit.
