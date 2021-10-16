@@ -34,11 +34,15 @@ interface LessonSet {
 
 class Attendance {
     private data: { [key: string]: Semesters } = {};
-    private pages: number;
     private currentSchoolYear = this.getSchoolYear();
     private winterHolidaysDate: Number;
     private overlay: Overlay = new Overlay();
     private config: Config = new Config();
+    private domParser = new DOMParser();
+    private pages: number;
+    private pagePaginationKey: string = null;
+    private pagePaginationValue: number = null;
+    private additionalRequestParams: string[] = [];
 
     constructor() {
         this.config.load().then(() => {
@@ -70,26 +74,59 @@ class Attendance {
 
     private getPage = (page: number) => new Promise((resolve, reject) => {
         let request = new XMLHttpRequest();
+        let params = [
+            'data1='+this.currentSchoolYear+'-09-01',
+            'data2='+(this.currentSchoolYear+1)+'-07-01',
+            'filtruj_id_przedmiotu=-1',
+            ...this.additionalRequestParams
+        ];
 
         request.open('POST', 'https://synergia.librus.pl/zrealizowane_lekcje', true);
-        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         request.onreadystatechange = () => {
             if (request.readyState == XMLHttpRequest.DONE && request.status == 200) {
-                let content = (new DOMParser).parseFromString(request.response, "text/html");
-                // Scrap page count from first page.
-                if (page === 1) {
-                    let pagination = content.querySelector('.pagination');
+                const content = this.domParser.parseFromString(request.response, 'text/html');
 
+                if (page === 1) {
+                    // Scrap page count from first page.
+                    const pagination = content.querySelector('.pagination');
                     if (pagination) {
-                        this.pages = Math.ceil(parseInt(pagination.textContent.split(' ').splice(-1)[0]) / 15);
+                        // [1] = current page; [2] = last page
+                        const pageMatches = pagination.textContent.match(/trona\s*(\d+)\s*z\s*(\d+)/);
+
+                        if (! pageMatches) {
+                            return reject('Wystąpił błąd w pobieraniu liczby stron wyników.');
+                        }
+
+                        this.pages = parseInt(pageMatches[2]);
                     } else {
                         this.pages = 1;
                     }
+
+                    // Behave like user.
+                    const inputs = content.querySelectorAll('form[action="/zrealizowane_lekcje"] input');
+                    inputs.forEach((input: HTMLInputElement) => {
+                        // Only hidden inputs.
+                        if (input.type.toLowerCase() !== 'hidden') return;
+
+                        const valueAsNumber = parseInt(input.value);
+                        if (valueAsNumber === 0 || valueAsNumber === 1) {
+                            // This is the page number.
+                            this.pagePaginationKey = input.name;
+                            this.pagePaginationValue = valueAsNumber;
+                            return;
+                        }
+
+                        // Pass the rest
+                        this.additionalRequestParams.push(`${input.name}=${input.value}`);
+                    });
+
+                    if (! this.pagePaginationKey) return reject('No pagination key');
                 }
 
                 const tableNo = Util.findInTable(
-                    document.querySelectorAll('table[class="decorated"] > thead > tr > td'),
-                    ['Data', 'Zajęcie Edukacyjne', 'Frekwencja']
+                    content.querySelectorAll('table[class="decorated"] > thead > tr > td'),
+                    ['Data', 'Zajęcia edukacyjne', 'Frekwencja']
                 );
 
                 content.querySelectorAll('table[class="decorated"] > tbody > tr').forEach(el => {
@@ -109,12 +146,25 @@ class Attendance {
         };
         request.onerror = () => {
             console.error('[LDA] Request failed: ', request);
-            // todo error handling
             reject(request);
         };
 
-        request.send(`data1=${this.currentSchoolYear}-09-01&data2=${this.currentSchoolYear+1}-07-01&filtruj_id_przedmiotu=-1&page=${page}`);
+        // set page key.
+        if (page !== 1) params.push(`${this.pagePaginationKey}=${this.pagePaginationValue + page - 1}`);
+
+        request.send(params.join('&'));
     });
+
+    private showError = (errorText: string) => {
+        let box = document.createElement('div');
+        box.innerHTML = '<span>[Dodatki do Librusa] '+ errorText +'</span><br>' +
+            '<span>Jeżeli problem będzie się powtarzał, zgłoś to na <a target="_blank" href="https://github.com/kubaska/librus-desktop-addons/issues">GitHub</a> lub na stronie dodatku w sklepie Firefox.</span>';
+        box.className = 'center';
+        box.style.color = 'red';
+        box.style.fontSize = '14px';
+
+        Util.insertAfter(box, document.querySelector('table.filters'));
+    }
 
     private getAttendance = () => {
         document.getElementById('lda-button-load').remove();
@@ -122,22 +172,44 @@ class Attendance {
 
         this.getPage(1).then(() => {
             let promises: Promise<void>[] = [];
+            let failures = 0;
+
             this.overlay.setSteps(this.pages).next();
 
             for (let page = 2; page <= this.pages; page++) {
-                promises.push(this.getPage(page).then(() => { this.overlay.next() }));
+                promises.push(
+                    this.getPage(page)
+                        .then(() => { this.overlay.next(); })
+                        .catch(() => { failures++; this.overlay.next(); })
+                );
             }
 
             // todo request throttling?
-            Promise.all(promises).then(() => {
-                // Display table with gathered data
-                // Exclusive to Firefox, because Chrome thinks it's an error (?)
-                if (isFirefox()) {
-                    console.table(this.data);
-                }
+            Promise.all(promises)
+                .then(() => {
+                    // Display table with gathered data
+                    // Exclusive to Firefox, because Chrome thinks it's an error (?)
+                    if (isFirefox()) {
+                        console.table(this.data);
+                    }
 
-                this.render();
-            })
+                    this.render();
+
+                    if (failures) {
+                        this.showError(
+                            'Wystąpił błąd w pobieraniu '+failures+' stron(y) wyników. ' +
+                            'Wyświetlam niekompletne wyniki. Odśwież stronę i spróbuj ponownie.'
+                        );
+                    }
+
+                    this.overlay.hide();
+                });
+        })
+        .catch(error => {
+            console.log('[LDA] (Error) ', error);
+            this.overlay.hide();
+            // could not fetch FIRST page
+            this.showError('Wystąpił błąd w pobieraniu pierwszej strony wyników.');
         })
     };
 
@@ -173,8 +245,9 @@ class Attendance {
             </table>`;
 
         let table = document.getElementById('da-percentage');
+        const sortedSubjectNames = Object.keys(this.data).sort();
 
-        for (let subjectName in this.data) {
+        sortedSubjectNames.forEach(subjectName => {
             let el = document.createElement('tr');
             let str = `<td>${subjectName}</td>`;
 
@@ -256,7 +329,7 @@ class Attendance {
     };
 
     /**
-     *
+     * Get lesson types associated for selected primary lesson state.
      *
      * @param {PrimaryLessonState} type
      */
